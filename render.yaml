@@ -1,0 +1,33 @@
+# Blueprint do Render (render.com) - plano gratuito
+# No painel: New > Blueprint > selecione o repositório.
+services:
+  - type: web
+    name: cloudmarket-bff
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerContext: ./cloudmarketBackend
+    dockerfilePath: ./cloudmarketBackend/Dockerfile
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - cloudmarketBackend/**
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PAYMENT_PROVIDER
+        value: fake
+      # Preencha no painel (sync: false = valor secreto, não fica no Git)
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: MERCADOPAGO_ACCESS_TOKEN
+        sync: false

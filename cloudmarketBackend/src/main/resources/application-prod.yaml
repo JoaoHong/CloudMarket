@@ -1,0 +1,10 @@
+# Perfil usado no Render (SPRING_PROFILES_ACTIVE=prod)
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true   # o navegador só vê HTTPS (Vercel -> Render)
+
+logging:
+  level:
+    root: INFO

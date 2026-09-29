@@ -1,0 +1,5 @@
+* text=auto
+# scripts shell precisam de LF para rodar no Docker (Linux)
+*.sh text eol=lf
+cloudmarketBackend/mvnw text eol=lf
+*.cmd text eol=crlf

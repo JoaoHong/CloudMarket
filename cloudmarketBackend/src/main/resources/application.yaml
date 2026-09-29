@@ -1,3 +1,60 @@
 spring:
   application:
-    name: cloudmarketBackend
+    name: cloudmarket-bff
+  profiles:
+    default: dev
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/cloudmarket}
+    username: ${DATABASE_USERNAME:cloudmarket}
+    password: ${DATABASE_PASSWORD:cloudmarket}
+    hikari:
+      # bancos gratuitos (Neon) têm poucas conexões: mantenha o pool pequeno
+      maximum-pool-size: ${DB_POOL_SIZE:5}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate   # o schema é controlado pelo Flyway
+    properties:
+      hibernate.jdbc.time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  session:
+    jdbc:
+      initialize-schema: never   # tabelas criadas pela migration V1
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: 7d
+      cookie:
+        name: CLOUDMARKET_SESSION
+        http-only: true
+        same-site: lax
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+cloudmarket:
+  # URL pública do frontend (usada nos redirects de pagamento)
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  # URL pública do backend (usada no webhook do Mercado Pago)
+  backend-url: ${BACKEND_URL:http://localhost:8080}
+  payment:
+    # fake = simulador interno (padrão, não precisa de conta)
+    # mercadopago = sandbox do Mercado Pago com credenciais de TESTE
+    provider: ${PAYMENT_PROVIDER:fake}
+    mercadopago:
+      access-token: ${MERCADOPAGO_ACCESS_TOKEN:}
+  demo:
+    # cria/atualiza o usuário demo@cloudmarket.dev / senha123 ao subir
+    enabled: ${DEMO_USER_ENABLED:true}
